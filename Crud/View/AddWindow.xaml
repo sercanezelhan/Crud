@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Crud.Model"
         xmlns:enum="clr-namespace:Crud.Enums"
+        xmlns:loading="clr-namespace:Crud.UserControls"
         mc:Ignorable="d"
         Title="Add Window" Height="249" Width="448" MinHeight="240" MinWidth="360" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MinHeight="160"/>
@@ -23,7 +25,7 @@
                     <ColumnDefinition Width="Auto" MinWidth="14" />
                 </Grid.ColumnDefinitions>
                 <Image Source="{Binding ImageName, Mode=TwoWay}"  HorizontalAlignment="Right" VerticalAlignment="Top" Height="95" Width="70" Grid.Column="1" Margin="0,10,516,0"/>
-                <Button  Command="{Binding AddImage}" HorizontalAlignment="Center" Content="Image" VerticalAlignment="Top"  Width="70" Height="34" Margin="10,116,506,0"  Grid.Column="1" />
+                <Button  Command="{Binding AddImageCommand}" HorizontalAlignment="Center" Content="Image" VerticalAlignment="Top"  Width="70" Height="34" Margin="10,116,506,0"  Grid.Column="1" />
             </Grid>
         </Grid>
         <Label Content="FirstName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,17,0,0" RenderTransformOrigin="0.498,1.524" Grid.Column="0" Height="26" Width="64"/>
@@ -39,7 +41,16 @@
             <ComboBoxItem Content="Kadın" Tag="{x:Static enum:PersonGender.Kadın}" Height="30"/>
         </ComboBox>
 
-        <Button Command="{Binding AddPersonCommand}" HorizontalAlignment="Left" Content="Add" VerticalAlignment="Top"  Margin="90,5,0,0" Width="330" Height="41" Grid.Row="1" />
+        <Button Command="{Binding AddPersonCommand}" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="90,5,0,0" Width="330" Height="41" Grid.Row="1">
+            <Grid RenderTransformOrigin="-0.267,0.514">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Add" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" Margin="0,10,0,11" Width="22"/>
+                <UserControl Visibility="Visible" Content="{Binding Path=UserControl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="-153,-3,0,1" Height="39"/>
+            </Grid>
+        </Button>
     </Grid>
 </Window>
 

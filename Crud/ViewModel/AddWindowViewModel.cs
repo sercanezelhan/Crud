@@ -1,6 +1,7 @@
 ﻿using Crud.Enums;
 using Crud.Helper;
 using Crud.Model;
+using Crud.UserControls;
 using Crud.View;
 using Microsoft.Win32;
 using System;
@@ -12,6 +13,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,7 +24,7 @@ namespace Crud.ViewModel
 {
     public class AddWindowViewModel : INotifyPropertyChanged
     {
-       
+
         #region Members 
 
         /// <summary>
@@ -45,6 +47,11 @@ namespace Crud.ViewModel
         /// </summary>
         private string base64String { get; set; }
 
+        /// <summary>
+        /// LoadingUserControlView Nesnesi
+        /// </summary>
+        private UserControl userControl;
+
         #endregion
 
         #region Constructors
@@ -53,6 +60,7 @@ namespace Crud.ViewModel
         {
             this.AddWindow = a;
             Person = new Person();
+            UserControl = new LoadingUserControlView(ref Load);
         }
 
         #endregion
@@ -79,13 +87,29 @@ namespace Crud.ViewModel
             }
         }
 
+        public UserControl UserControl
+        {
+            get { return userControl; }
+            set
+            {
+                userControl = value;
+                OnPropertyChanged(nameof(UserControl));
+            }
+        }
+
         #endregion
 
         #region Events
+
         /// <summary>
         /// PersonList ekleme events
         /// </summary>
         public event EventHandler AddEvent;
+
+        /// <summary>
+        /// LoadingUserControl Spin Event
+        /// </summary>
+        private event EventHandler Load;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -103,13 +127,13 @@ namespace Crud.ViewModel
             }
         }
 
-        public ICommand AddImage
+        public ICommand AddImageCommand
         {
             get
             {
-                if (addImage == null)
-                    addImage = new RelayCommand(ImageDialog);
-                return addImage;
+                if (addImageCommand == null)
+                    addImageCommand = new RelayCommand(ImageDialog);
+                return addImageCommand;
             }
         }
 
@@ -125,7 +149,7 @@ namespace Crud.ViewModel
         /// <summary>
         /// AddView Image Butonu
         /// </summary>
-        private ICommand addImage;
+        private ICommand addImageCommand;
 
         #endregion
 
@@ -135,27 +159,36 @@ namespace Crud.ViewModel
         /// </summary>
         public void AddPerson()
         {
-            if (!string.IsNullOrEmpty( Person.FirstName) && !string.IsNullOrEmpty(Person.LastName) && Person.Gender != null && !string.IsNullOrEmpty(ImageName))
+            Load?.Invoke(true, null);
+            ThreadPool.QueueUserWorkItem(delegate
             {
-                Person p = new Person()
+                Thread.Sleep(2000);
+                if (!string.IsNullOrEmpty(Person.FirstName) && !string.IsNullOrEmpty(Person.LastName) && Person.Gender != null && !string.IsNullOrEmpty(ImageName))
                 {
-                    FirstName = Person.FirstName,
-                    LastName = Person.LastName,
-                    Age = Person.Age,
-                    Gender =  Person.Gender,
-                    PersonImage=base64String
-                };
-                AddEvent?.Invoke(p, null);
-                Person = new Person();
-                ImageName = string.Empty;
-                MessageBoxResult result = MessageBox.Show("Çıkmak istiyor musunuz?", "Uyarı", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.Yes)
-                {
-                    AddWindow.Close();
+                    Person p = new Person()
+                    {
+                        FirstName = Person.FirstName,
+                        LastName = Person.LastName,
+                        Age = Person.Age,
+                        Gender = Person.Gender,
+                        PersonImage = base64String
+                    };
+                    AddEvent?.Invoke(p, null);
+                    Person = new Person();
+                    ImageName = string.Empty;
+                    MessageBoxResult result = MessageBox.Show("Çıkmak istiyor musunuz?", "Uyarı", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        AddWindow.Close();
+                    }
                 }
-            }
-            else
-                MessageBox.Show("Alanları boş bırakamazsınız");
+
+                else
+                {
+                    MessageBox.Show("Alanları boş bırakamazsınız");
+                }
+                Load?.Invoke(false, null);
+            });
         }
 
         /// <summary>
@@ -185,5 +218,6 @@ namespace Crud.ViewModel
         }
 
         #endregion
+
     }
 }

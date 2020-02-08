@@ -1,5 +1,6 @@
 ﻿using Crud.Helper;
 using Crud.Model;
+using Crud.UserControls;
 using Crud.View;
 using Microsoft.VisualStudio.PlatformUI;
 using System;
@@ -8,15 +9,18 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Crud.ViewModel
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-       
+
+
         #region Members
 
         /// <summary>
@@ -45,10 +49,11 @@ namespace Crud.ViewModel
 
         public MainWindowViewModel()
         {
-            Person = new Person();
-            dataBase = new DataBase();
+                Person = new Person();
+                dataBase = new DataBase();
             PersonList = new ObservableCollection<Person>(dataBase.DataBaseQuery());
         }
+
 
         #endregion
 
@@ -204,7 +209,8 @@ namespace Crud.ViewModel
                         LastName = p1.LastName,
                         Age = p1.Age,
                         Gender = p1.Gender,
-                        ID=p1.ID
+                        ID=p1.ID,
+                        PersonImage=p1.PersonImage
                     };
                     PersonList[i] = dataBase.DataBaseUpdate(p);
                     MessageBox.Show($"Bilgi/Bilgiler Başarıyla Güncellendi.", "Uyarı", MessageBoxButton.OK, MessageBoxImage.Asterisk);

@@ -20,6 +20,7 @@ namespace Crud.View
     /// </summary>
     public partial class AddWindow : Window , IDisposable
     {
+        AddWindowViewModel addWindowViewModel;
 
         #region Constructor
 
@@ -28,8 +29,9 @@ namespace Crud.View
         /// </summary>
         public AddWindow()
         {
+            addWindowViewModel = new AddWindowViewModel(this);
             InitializeComponent();
-            this.DataContext = new AddWindowViewModel(this);
+            this.DataContext = addWindowViewModel;
         }
 
         #endregion

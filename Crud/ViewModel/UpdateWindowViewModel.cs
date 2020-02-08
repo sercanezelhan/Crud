@@ -1,20 +1,35 @@
 ﻿using Crud.Helper;
 using Crud.Model;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace Crud.ViewModel
 {
     public class UpdateWindowViewModel
     {
 
- 
+
+
+
+
+
+
+
+
+
+
+
+
         #region Members
 
         /// <summary>
@@ -22,21 +37,28 @@ namespace Crud.ViewModel
         /// </summary>
         private Person person;
 
+        /// <summary>
+        /// UpdateView Image Nesnesi
+        /// </summary>
+        private BitmapFrame imageName;
+
         #endregion
 
         #region Constructors
 
-        public UpdateWindowViewModel(Person _person)
+        public UpdateWindowViewModel(Person person)
         {
             Person p = new Person()
             {
-                FirstName = _person.FirstName,
-                LastName = _person.LastName,
-                Age = _person.Age,
-                Gender = _person.Gender,
-                ID = _person.ID
+                FirstName = person.FirstName,
+                LastName = person.LastName,
+                Age = person.Age,
+                Gender = person.Gender,
+                ID = person.ID,
+                PersonImage=person.PersonImage
             };
             Person = p;
+            ImageName = ImageConvert(p.PersonImage);
         }
 
         #endregion
@@ -50,6 +72,16 @@ namespace Crud.ViewModel
             {
                 person = value;
                 OnPropertyChanged("Person");
+            }
+        }
+
+        public BitmapFrame ImageName
+        {
+            get{ return imageName; }
+            set
+            {
+                imageName = value;
+                OnPropertyChanged("ImageName");
             }
         }
 
@@ -75,6 +107,16 @@ namespace Crud.ViewModel
             }
         }
 
+        public ICommand UpdateImageCommand
+        {
+            get
+            {
+                if (updateImageCommand == null)
+                    updateImageCommand = new RelayCommand(ImageDialog);
+                return updateImageCommand;
+            }
+        }
+
         #endregion
 
         #region ICommands
@@ -83,6 +125,11 @@ namespace Crud.ViewModel
         /// UpdateView Update butonu
         /// </summary>
         private ICommand updatePersonCommand;
+
+        /// <summary>
+        /// UpdateView Image Butonu
+        /// </summary>
+        private ICommand updateImageCommand;
 
         #endregion
 
@@ -93,7 +140,7 @@ namespace Crud.ViewModel
         /// </summary>
         public void Update()
         {
-            if (Person.FirstName != string.Empty && Person.LastName != string.Empty)
+            if (!string.IsNullOrEmpty(Person.FirstName) && !string.IsNullOrEmpty(Person.LastName) && Person.Gender != null && Person.PersonImage!=null)
             {
                 Person p = new Person()
                 {
@@ -101,12 +148,55 @@ namespace Crud.ViewModel
                     LastName = Person.LastName,
                     Age = Person.Age,
                     Gender = Person.Gender,
-                    ID = Person.ID
+                    ID=Person.ID,
+                    PersonImage = base64String
                 };
                 UpdateEvent?.Invoke(p, null);
             }
             else
                 MessageBox.Show("Alanları boş bırakamazsınız");
+        }
+
+
+        /// <summary>
+        /// OpenFileDialog Image to Base64 Metodu
+        /// </summary>
+        private void ImageDialog()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "All Files |*.*|JPG File|*.jpg,*.jpeg|PNG File|*.png";
+            openFileDialog.Title = "Image";
+            openFileDialog.ShowDialog();
+            using (System.Drawing.Image image = System.Drawing.Image.FromFile(openFileDialog.FileName))
+            {
+                using (MemoryStream m = new MemoryStream())
+                {
+                    image.Save(m, image.RawFormat);
+                    byte[] imageBytes = m.ToArray();
+                    base64String = Convert.ToBase64String(imageBytes);
+                    BitmapFrame bitmapFrame = ImageConvert(base64String);
+                    ImageName = bitmapFrame;
+                }
+            }
+        }
+        
+        private string base64String { get;set; }
+        
+        /// <summary>
+        /// Base64 to fotoğraf metodu.
+        /// </summary>
+        /// <returns></returns>
+        private BitmapFrame ImageConvert(string base64)
+        {
+            if (string.IsNullOrEmpty(base64))
+                return null;
+            var imgBytes = System.Convert.FromBase64String(base64);
+            if (imgBytes == null)
+                return null;
+            using (var stream = new MemoryStream(imgBytes))
+            {
+                return BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+            }
         }
 
         public void OnPropertyChanged(string update)

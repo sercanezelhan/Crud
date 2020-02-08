@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Crud"
+        xmlns:local="clr-namespace:Crud.UserControls"
         xmlns:converter="clr-namespace:Crud.Model"
         mc:Ignorable="d"
         Title="Persons" Height="400" Width="506" MinHeight="400" MinWidth="506" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
@@ -12,6 +12,7 @@
         <converter:PersonImageConverter x:Key="Base64ImageConverter"/>
     </Window.Resources>
     <Grid Margin="0,0,0,-2">
+
         <Button Command="{Binding AddPersonCommand}" HorizontalAlignment="Stretch" Content="Add" VerticalAlignment="Stretch"  Margin="10,306,245,15" Width="233" Height="34" />
         <Button Command="{Binding DeletePersonCommand}" HorizontalAlignment="Stretch" Content="Delete" VerticalAlignment="Stretch"  Margin="246,306,11,15" Width="233" Height="34" />
         <ListView ItemsSource="{Binding PersonList, Mode=TwoWay}" SelectedItem="{Binding SelectedPerson}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"  Margin="10,10,13,70" Width="Auto" Height="Auto">

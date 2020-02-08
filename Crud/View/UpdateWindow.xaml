@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Crud.View"
         mc:Ignorable="d"
-        Title="UpdateWindow" Height="270" Width="360" MinHeight="240" MinWidth="360"  ResizeMode="NoResize" WindowStartupLocation="">
+        Title="UpdateWindow" Height="270" Width="461" MinHeight="240" MinWidth="360"  ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -17,6 +17,14 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
+                <Grid Grid.Column="1" HorizontalAlignment="Left" Width="455" RenderTransformOrigin="0.429,0.58"  >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="66*"/>
+                        <ColumnDefinition Width="25*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="{Binding ImageName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center" VerticalAlignment="Top" Height="97" Width="78"  Grid.Row="0" Grid.Column="1" Margin="10,0,37,0"/>
+                    <Button  Command="{Binding UpdateImageCommand}" Content="Image" HorizontalAlignment="Center"  VerticalAlignment="Top"  Width="104" Height="34"  Grid.Row="0" Grid.Column="1" Margin="10,106,11,0" />
+                </Grid>
             </Grid>
             <Label Content="FirstName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,17,0,0" RenderTransformOrigin="0.498,1.524" Grid.Row="0" Grid.Column="1"/>
             <Label Content="LastName" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,47,0,0" RenderTransformOrigin="0.498,1.524" Grid.Row="0" Grid.Column="1"/>
@@ -29,8 +37,6 @@
                 <ComboBoxItem Content="Erkek"/>
                 <ComboBoxItem Content="Kadın"/>
             </ComboBox>
-            <Image Source="{Binding ImageName, Mode=TwoWay}"  HorizontalAlignment="Center" VerticalAlignment="Top" Height="97" Width="78" Margin="432,10,96,0" Grid.Row="0" Grid.ColumnSpan="1"/>
-            <Button  Command="{Binding AddImage}" HorizontalAlignment="Left" Content="Image" VerticalAlignment="Top"  Width="234" Height="34" Margin="352,115,0,0" Grid.Row="0" Grid.ColumnSpan="1" />
             <Button Command="{Binding UpdatePersonCommand}" HorizontalAlignment="Left" Content="Update" VerticalAlignment="Top"  Margin="90,10,0,0" Width="233" Height="34" Grid.Row="1"/>
         </Grid>
     </Grid>
